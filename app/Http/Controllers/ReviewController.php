@@ -7,8 +7,10 @@ use App\Models\Product;
 
 use App\Http\Resources\ReviewResource;
 
-use App\Http\Requests\StoreReviewRequest;
+use App\Http\Requests\ReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
+use Illuminate\Http\Response;
+
 
 class ReviewController extends Controller
 {
@@ -38,9 +40,14 @@ class ReviewController extends Controller
      * @param  \App\Http\Requests\StoreReviewRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreReviewRequest $request)
+    public function store(ReviewRequest $request,Product $product)
     {
-        //
+        $review = new Review($request->all());
+        $product->reviews()->save($review);
+
+        return response([
+            'data' => new ReviewResource($review)
+        ],Response::HTTP_CREATED);
     }
 
     /**
